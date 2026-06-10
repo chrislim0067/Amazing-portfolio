@@ -19,7 +19,6 @@ const downloads = [
   { url: `${BASE}/assets/IBMPlexMono-Medium-1e253194.woff`, dest: 'assets/IBMPlexMono-Medium-1e253194.woff' },
   { url: `${BASE}/assets/IBMPlexMono-Regular-d3034935.woff2`, dest: 'assets/IBMPlexMono-Regular-d3034935.woff2' },
   { url: `${BASE}/assets/IBMPlexMono-Regular-419d45f6.woff`, dest: 'assets/IBMPlexMono-Regular-419d45f6.woff' },
-  { url: `${BASE}/assets/images/social.jpg`, dest: 'assets/images/social.jpg' },
   { url: `${BASE}/assets/audioworker-036a09db.js`, dest: 'assets/audioworker-036a09db.js' },
   { url: `${BASE}/assets/msdfworker-ac346fa7.js`, dest: 'assets/msdfworker-ac346fa7.js' },
   { url: `${BASE}/assets/bitmapworker-046527f8.js`, dest: 'assets/bitmapworker-046527f8.js' },
