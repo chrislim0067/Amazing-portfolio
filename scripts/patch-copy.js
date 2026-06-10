@@ -13,6 +13,41 @@ const bundlePath = path.join(
   'src/legacy/App3D-f554a111.js',
 );
 
+const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const bundleCopies = [
+  bundlePath,
+  path.join(projectRoot, 'assets/App3D-f554a111.js'),
+  path.join(projectRoot, 'public/assets/App3D-f554a111.js'),
+];
+
+function stripLegacyBranding(source) {
+  return source
+    .replaceAll(
+      'Our mission is to create the largest onchain community, driving the consumer crypto revolution.',
+      'Senior Director of AI/ML Engineering & Data Platforms. Full-Stack AI/ML & MLOps Expert.',
+    )
+    .replaceAll(
+      'Our mission is to build the next generation of consumer brands at the intersection of Community, AI, and crypto.',
+      'Senior Director of AI/ML Engineering\\n& Data Platforms |\\nFull-Stack AI/ML & MLOps Expert',
+    )
+    .replaceAll('Igloo Inc.', '')
+    .replaceAll('Igloo, Inc.', '')
+    .replace(
+      /manifesto:\{title:"[^"]*",text:"Our mission is to create the largest onchain community, driving the consumer crypto revolution\."\}/,
+      'manifesto:{title:"",text:"Senior Director of AI/ML Engineering\\n& Data Platforms |\\nFull-Stack AI/ML & MLOps Expert"}',
+    )
+    .replace(
+      /manifesto:\{title:"[^"]*",text:"Our mission is to build the next generation of consumer brands at the intersection of Community, AI, and crypto\."\}/,
+      'manifesto:{title:"",text:"Senior Director of AI/ML Engineering\\n& Data Platforms |\\nFull-Stack AI/ML & MLOps Expert"}',
+    );
+}
+
+function writeBundleCopies(source) {
+  for (const copyPath of bundleCopies) {
+    writeFileSync(copyPath, source, 'utf8');
+  }
+}
+
 let source = readFileSync(bundlePath, 'utf8');
 
 // Remove footer legal lines and copyright line.
@@ -34,7 +69,9 @@ const oldLogoClass =
 
 if (!source.includes(oldLogoClass)) {
   if (source.includes('logoText:"Chris"') && source.includes('text:Be.logoText')) {
-    console.log('Copy already patched:', bundlePath);
+    source = stripLegacyBranding(source);
+    writeBundleCopies(source);
+    console.log('Copy already patched; synced bundle copies.');
     process.exit(0);
   }
   console.error('Logo class marker not found — bundle format may have changed.');
@@ -226,11 +263,12 @@ source = source.replaceAll(
 source = patchSummaryContent(source);
 source = patchExperienceCube(source);
 source = patchEducationCube(source);
+source = stripLegacyBranding(source);
 
 source = source.replace(
   'this.elements.push(new Yh({parent:this,text:e.title,options:{...t,color:Be.colorProjectTitle}}),new Yh({parent:this,text:e.content,options:{...t,color:Be.colorProjectText}}),new Yh({parent:this,text:e.socialTitle,options:{...t,color:Be.colorProjectTitle}}),new ey({parent:this,links:e.social,options:{...t,color:Be.colorProjectText}}),new Yh({parent:this,text:e.linkTitle,options:{...t,color:Be.colorProjectTitle}}),new ey({parent:this,links:e.links,options:{...t,color:Be.colorProjectText}}))',
   'this.elements.push(new Yh({parent:this,text:e.title,options:{...t,color:Be.colorProjectTitle}}),new Yh({parent:this,text:e.content,options:{...t,color:Be.colorProjectText}}),new Yh({parent:this,text:e.socialTitle,options:{...t,color:Be.colorProjectTitle}}),new ey({parent:this,links:e.social,options:{...t,color:Be.colorProjectText}})),e.linkTitle&&this.elements.push(new Yh({parent:this,text:e.linkTitle,options:{...t,color:Be.colorProjectTitle}})),e.links&&e.links.length&&this.elements.push(new ey({parent:this,links:e.links,options:{...t,color:Be.colorProjectText}}))',
 );
 
-writeFileSync(bundlePath, source, 'utf8');
-console.log('Patched branding copy in', bundlePath);
+writeBundleCopies(source);
+console.log('Patched branding copy in legacy bundle copies.');
