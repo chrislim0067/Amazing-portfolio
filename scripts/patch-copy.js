@@ -218,6 +218,11 @@ source = source.replaceAll(
   'link:"https://www.linkedin.com/in/chris-kiel-804659106/"',
 );
 
+source = source.replaceAll(
+  'url:"https://medium.com/@iglooinc"',
+  'url:"https://medium.com/@chrislim.tech002"',
+);
+
 source = patchSummaryContent(source);
 source = patchExperienceCube(source);
 source = patchEducationCube(source);
